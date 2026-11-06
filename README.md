@@ -76,4 +76,4 @@ The final export labels availability as Sales Metrics Availability %, formats In
 
 The source specifies no currency, and January 2025 is partial through January 18. RLS has not been functionally verified. Functional tests covered selected scenarios, not every filter combination. The static files are not a fully reproducible model release. Synthetic descriptive results cannot establish real customer behavior, discount causality or commercial impact.
 
-This version is prepared locally for publication review; no public repository or interactive report is claimed here.
+This public repository presents a static Power BI case study with a PDF report and screenshots; it does not provide an interactive Power BI report.
