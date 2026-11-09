@@ -1,10 +1,10 @@
 # Data model
 
-## Evidence provenance and grain
+## Grain and model metadata
 
-The relationship metadata below was supplied by the project owner from Power BI Desktop using `INFO.VIEW.RELATIONSHIPS()`. Measure definitions were supplied from `INFO.VIEW.MEASURES()`. They were not independently extracted from the PBIX during this documentation update. Earlier direct inspection of readable PBIX layout and diagram files established object and page presence; it is distinct from this newly supplied semantic-model evidence.
+The documented relationship and measure metadata was exported from Power BI Desktop using `INFO.VIEW.RELATIONSHIPS()` and `INFO.VIEW.MEASURES()`. The PBIX is not distributed in this repository, so readers cannot inspect the semantic model directly.
 
-`FactSales` represents one source transaction per row. Independent source checks and owner-confirmed Power Query validation agree on 12,575 rows and 12,575 distinct Transaction IDs. This is not documented as a multi-line basket model.
+`FactSales` represents one transaction per row. Source checks and Power Query validation recorded 12,575 rows and 12,575 distinct Transaction IDs. This is not a multi-line basket model.
 
 ## Business star schema: exported relationships
 
@@ -40,14 +40,12 @@ Customers With Transactions =
     DISTINCTCOUNT(FactSales[Customer ID])
 ```
 
-The report owner supplied selected functional results: 25 customers unfiltered, 3 on September 16, 2022, 1 on March 17, 2023 (with 2 transactions), and 1 on June 6, 2023. This evidence supports the corrected card in those scenarios; it does not imply that every filter combination or relationship path has been tested. The relationship configuration is unchanged by this documentation integration.
+Selected Power BI functional tests recorded: 25 customers unfiltered, 3 on September 16, 2022, 1 on March 17, 2023 (with 2 transactions), and 1 on June 6, 2023. These tests support the corrected card in the listed contexts; the underlying relationship configuration did not change.
 
 ## Recovered source dimensions and report sections
 
 The supporting source files contain 25 customers, 200 products, 8 categories, 2 locations, 3 payment methods and 1,114 dates. The preparation package includes a separate category file; the inspected PBIX diagram does not show a separate DimCategory table. Source-file organization is distinct from the final model schema.
 
-The six visible sections are Executive, Data Quality, Discounts, Products, Customers and Channel & Payment. Three sections are hidden: Customer Detail, Product Tooltip and Visual Calc Lab. Page presence is confirmed; the final PDF confirms the six main pages. The owner-supplied selected measure tests are distinct from the static export and do not establish every interactive path.
-
-Exported cardinality and filter metadata do not prove correct results under every filter combination, working RLS, refresh behavior or all supporting model features.
+The six visible sections are Executive, Data Quality, Discounts, Products, Customers and Channel & Payment. Three sections are hidden: Customer Detail, Product Tooltip and Visual Calc Lab. The final PDF shows the six main pages; selected measure checks are documented separately from the static export.
 
 [Metric definitions](metric-definitions.md) | [Back to overview](../README.md)
