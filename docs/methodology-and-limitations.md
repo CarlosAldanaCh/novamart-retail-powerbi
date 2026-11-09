@@ -16,7 +16,7 @@ See [cleaning](data-cleaning.md), [data model](data-model.md) and [metric defini
 
 [The six-page report](../reports/novamart-retail.pdf) has SHA-256:
 
-`fd17d6c42fed5adc3325ea5519e338e2f68e808836531e66b045f5ccc9d6b161`
+`7dd58c819e2a3c12a9d0025264679383836bf5a8a282aad87aebae91e89102c7`
 
 The six screenshots were rendered from the same final PDF at 2,400 × 1,388 pixels. They preserve its visual content without retouching metrics.
 
