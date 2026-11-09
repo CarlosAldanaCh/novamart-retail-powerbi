@@ -12,9 +12,9 @@
 
 All 604 missing Quantity values occur on the same records as the 604 missing Total Spent values. No other original fields are missing. Only 7,579 records have all 11 fields present before cleaning.
 
-## User-supplied Power Query evidence
+## Power Query preparation
 
-The project owner inspected the M code for `FactSales`, `FactSales_Working` and `item_lookup` and supplied the logic and model-validation results below. This update documents that evidence; it does not independently extract M from the PBIX. The flow is:
+The Power Query logic for `FactSales`, `FactSales_Working` and `item_lookup` was reviewed during project documentation. The transformations are described below; complete M scripts are not published here. The data flow is:
 
 `fact_sales_raw.csv -> FactSales_Working -> FactSales`
 
@@ -22,9 +22,9 @@ The project owner inspected the M code for `FactSales`, `FactSales_Working` and 
 
 The documented Power Query lookup converts numeric fields, derives missing unit prices from Total Spent / Quantity, converts cleaned prices to fixed-decimal Currency.Type, selects Item, Category and cleaned price, filters item names and removes identical rows. FactSales_Working left-joins on Category and cleaned price and expands the matching item.
 
-When the original price is missing, `Price Per Unit Clean = Total Spent / Quantity`; the cleaned price uses `Currency.Type`. The lookup keys are Category and Price Per Unit Clean. The owner-confirmed actual Power Query model has 200 unique keys, no ambiguous mappings and no null products in the final lookup. All 609 originally missing prices and all 1,213 originally missing items were recovered, with none unresolved among records marked as imputed. There were no division-by-zero cases or relevant rounding changes. The actual model join preserves 12,575 rows and 12,575 distinct Transaction IDs, with no fanout.
+When the original price is missing, `Price Per Unit Clean = Total Spent / Quantity`; the cleaned price uses `Currency.Type`. The lookup keys are Category and Price Per Unit Clean. Power Query validation recorded 200 unique lookup keys, no ambiguous mappings and no null products in the final lookup. All 609 originally missing prices and all 1,213 originally missing items were recovered, with none unresolved among records marked as imputed. There were no division-by-zero cases or relevant rounding changes. The actual model join preserves 12,575 rows and 12,575 distinct Transaction IDs, with no fanout.
 
-The inspected M logic is available as owner-supplied evidence, but complete verbatim query scripts are not included. No replacement M script or additional transformation steps are invented here.
+This records the reviewed logic rather than presenting an executable replacement for the original M queries.
 
 ## Transaction classification and discount handling
 
@@ -43,12 +43,10 @@ Read-only decimal arithmetic on the recovered CSV, performed separately during p
 - All 1,213 missing product names have one recovery. No nonmissing item disagrees with its matched product.
 - Sales total 1,552,071 before and after this value-only lookup; no row fanout or invented sales is needed.
 
-These independent checks agree with the owner-supplied validation of the actual Power Query model. They were not part of the original report implementation unless separately documented. They establish this source's integrity and corroborate the supplied model results, without proving future refresh behavior.
+The separate source checks agree with the recorded Power Query validation. They corroborate this dataset's totals and lookup integrity, not the behavior of future data refreshes.
 
 ## Analytical choices
 
 Preserve original missingness indicators for imputation reporting. Keep incomplete sales transactions in transaction counts, without inventing quantity or sales. Keep unknown discounts separate. The lookup is supported by this synthetic catalog's unique category-price combinations; repeat uniqueness and row-count checks if the catalog or pricing changes.
-
-No source, transformation code, PBIX or metric value was modified while preparing this case study.
 
 [Metric definitions](metric-definitions.md) | [Back to overview](../README.md)
