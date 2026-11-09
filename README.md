@@ -1,79 +1,53 @@
-# NovaMart Retail | Sales Analytics with Power BI
+# NovaMart Retail | Sales Analytics in Power BI
 
-A six-page sales report that connects retail performance with the quality of the data behind it. NovaMart is a fictional retailer and the dataset is synthetic. This portfolio case study demonstrates an analytical deliverable, not client work or measured commercial impact.
+**Six-page Power BI case study** on retail performance and data quality, built with a synthetic Kaggle dataset for a fictional retailer. This is a portfolio project, not client work.
 
-## Business problem
+[**View the report (PDF)**](reports/novamart-retail.pdf) · [Methodology](docs/methodology-and-limitations.md) · [Metric definitions](docs/metric-definitions.md)
 
-A retail analyst needs a consistent view of sales, products, customers, channels and payment methods. Missing product, price and sales fields can distort that view. The task was to recover supported product information, preserve transaction counts and make the populations behind each KPI clear.
+![Executive Overview — NovaMart Retail](screenshots/01-executive-overview.webp)
 
-## Delivered report
+## The business question
 
-The Power BI report covers executive performance, data quality, discounts, products, customers, and channel/payment analysis. The final PDF and all six previews come from one export, with global totals restored and the prioritized presentation corrections applied.
+How can a retailer monitor sales, product performance, customers, discounts and sales channels when some transaction fields are missing?
 
-[View the six-page PDF](reports/novamart-retail.pdf)
+I prepared the source data, built a dimensional model and designed a report that keeps incomplete records visible without treating unknown values as zero.
 
-![Executive overview](screenshots/01-executive-overview.webp)
+## Three findings from the dataset
 
-| Page | Analytical purpose | Preview |
-| --- | --- | --- |
-| Executive Overview | Sales, transactions, units and time trend | [View](screenshots/01-executive-overview.webp) |
-| Data Quality Overview | Essential metric availability and imputation | [View](screenshots/02-data-quality.webp) |
-| Discount Analysis | Known discount status and usage denominator | [View](screenshots/03-discount-analysis.webp) |
-| Product Performance | Product sales, units and transactions | [View](screenshots/04-product-performance.webp) |
-| Customer Analysis | Customers with transactions and activity rankings | [View](screenshots/05-customer-analysis.webp) |
-| Channel & Payment | Channel and payment-method breakdowns | [View](screenshots/06-channel-payment.webp) |
+1. **Recorded sales total 1,552,071** across **11,971 transactions with valid sales metrics**, giving an **average ticket of 129.65**. The source does not specify a currency. Sales amounts for the other 604 transactions are unknown, so recorded sales are not an estimate of all potential revenue.
+2. **50.37% of transactions with a known discount status were discounted** (4,219 of 8,376). Another **4,199 transactions (33.39%)** have an unknown discount status. Reporting discount usage against all transactions would answer a different, misleading question.
+3. **95.20% of transactions have the core metrics needed for sales analysis** (11,971 of 12,575). Cleaning recovered **609 unit prices** and **1,213 product names** without increasing the transaction count, but did not invent sales or quantities for the 604 incomplete records.
 
-This is a Power BI report, not a Power BI Service dashboard. The static PDF does not reproduce interactive filtering, tooltips or drillthrough. The source model also contains three hidden supporting pages, outside the six-page export.
+These are descriptive findings from **synthetic data**, not conclusions about a real retailer or evidence of commercial impact.
 
-## Technical approach
+## Report pages
 
-**Tools:** Power BI Desktop, Power Query and DAX, using recovered CSV fact and dimension tables.
+| Page | What it explores |
+| --- | --- |
+| [Executive Overview](screenshots/01-executive-overview.webp) | Recorded sales, transactions, units and trends |
+| [Data Quality](screenshots/02-data-quality.webp) | Metric availability, missing data and recoveries |
+| [Discount Analysis](screenshots/03-discount-analysis.webp) | Known discount statuses and usage |
+| [Product Performance](screenshots/04-product-performance.webp) | Sales, units and product rankings |
+| [Customer Analysis](screenshots/05-customer-analysis.webp) | Customers with transactions and activity |
+| [Channel & Payment](screenshots/06-channel-payment.webp) | Sales channels and payment methods |
 
-- Recovered 609 missing unit prices from recorded sales divided by quantity.
-- Recovered 1,213 missing item names with a validated category-price lookup containing 200 unique keys.
-- Preserved 12,575 rows and distinct transaction IDs through the join, with no fanout.
-- Kept 604 transactions with incomplete essential sales metrics identifiable, without inventing their sales amounts.
-- Used five active dimensional relationships with single-direction filtering toward FactSales.
-- Added Customers With Transactions on the fact table for the Customer Analysis card; retained the original dimension-count measure.
+## How I built it
 
-Read-only Python checks were performed separately during portfolio preparation to corroborate source totals and lookup integrity. They are not presented as part of the original Power BI implementation. Supplied model definitions and functional-test results are attributed in the technical documentation.
+**Power BI Desktop · Power Query (M) · DAX · Dimensional modeling**
 
-## Verified findings and analytical decisions
+- Preserved the original **12,575 transaction rows and distinct IDs** through the product lookup, checking for ambiguous keys and join fanout.
+- Derived missing unit prices from **Total Spent / Quantity** when both values were available.
+- Recovered product names using **200 unique category–price lookup keys**.
+- Separated valid sales transactions from incomplete ones and **Unknown** discount statuses from **No**.
+- Modeled sales against five dimensions: Date, Product, Location, Customer and Payment Method.
+- Updated the customer KPI to count distinct customer IDs from the fact table so it responds to report filters; the Top 10 customer ranking intentionally includes ties.
 
-| Measure | Value | Interpretation |
-| --- | ---: | --- |
-| Total transactions | 12,575 | Includes incomplete sales records |
-| Valid sales transactions | 11,971 | Both Quantity and Total Spent are present |
-| Sales Metrics Availability % | 95.20% | 11,971 / 12,575; not all-field completeness |
-| Total sales | 1,552,071 | Recorded sales for valid transactions; currency unspecified |
-| Average ticket | 129.65 | 1,552,071 / 11,971 valid transactions |
-| Customers With Transactions | 25 | Distinct FactSales customer IDs at full-data scope |
-| Discounted transactions | 4,219 | Known Yes discount status |
-| Known discount transactions | 8,376 | Yes or No, excluding Unknown |
-| Unknown discount transactions | 4,199 | Missing original discount status |
-| Discount usage | 50.37% | 4,219 / 8,376 known statuses |
+See [data cleaning](docs/data-cleaning.md), [model and relationships](docs/data-model.md), [DAX definitions](docs/metric-definitions.md), and [selected validation checks](docs/methodology-and-limitations.md).
 
-Only 7,579 source records (60.27%) contain all 11 original fields. Price and product recovery improves usability without making missing quantity or sales known. Transaction counts retain incomplete records; average ticket uses valid sales transactions. Unknown discounts remain separate from No.
+## Dataset and limitations
 
-The report owner validated customer counting on selected dates. On March 17, 2023, the model returned two transactions, one valid and one incomplete, with sales and average ticket both 230. This supports the valid-transaction denominator in that tested context. An unmatched-product DAX test returned BLANK for the four tested measures; it does not establish every slicer behavior. See the [test record](docs/methodology-and-limitations.md).
+Source: [Retail Store Sales: Dirty for Data Cleaning](https://www.kaggle.com/datasets/ahmedmohamed2003/retail-store-sales-dirty-for-data-cleaning), by **Ahmed Mohamed**, licensed under [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/). I used the source to build a fictional NovaMart scenario. [Attribution and adaptations](docs/data-source-and-license.md).
 
-The customer transaction ranking explicitly includes ties: three customers share the cutoff count of 507, so the Top 10 visual contains 11 customers.
+The source has **25 customer IDs**, **2 locations**, no specified currency, and only partial data for January 2025 (through January 18). The PDF is static; it cannot demonstrate interactive filtering. The PBIX, raw CSVs and complete Power Query scripts are not included in this repository, so this publication is **not a fully reproducible model package**. Row-level security has not been functionally verified.
 
-## Data source
-
-[Retail Store Sales: Dirty for Data Cleaning](https://www.kaggle.com/datasets/ahmedmohamed2003/retail-store-sales-dirty-for-data-cleaning), by Ahmed Mohamed, is synthetic data licensed under [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/). The recovered preparation package separates the source into fact and dimension tables before cleaning.
-
-The fact table has one transaction per row and dates from January 1, 2022 through January 18, 2025. Raw data and the PBIX are excluded from this publication package. [Source, adaptations and license](docs/data-source-and-license.md) records attribution and ShareAlike obligations.
-
-## Technical documentation and limitations
-
-- [Data model](docs/data-model.md): business star schema, supporting relationships and customer-count correction.
-- [Metric definitions](docs/metric-definitions.md): supplied DAX, eligibility rules and denominators.
-- [Data cleaning](docs/data-cleaning.md): original missingness, Power Query logic and integrity checks.
-- [Methodology and limitations](docs/methodology-and-limitations.md): evidence provenance, final-export hash and selected functional tests.
-
-The final export labels availability as Sales Metrics Availability %, formats Incomplete Transactions as 604 and explicitly labels customer ranking ties. The underlying Data Completeness % measure name and calculation are unchanged.
-
-The source specifies no currency, and January 2025 is partial through January 18. RLS has not been functionally verified. Functional tests covered selected scenarios, not every filter combination. The static files are not a fully reproducible model release. Synthetic descriptive results cannot establish real customer behavior, discount causality or commercial impact.
-
-This public repository presents a static Power BI case study with a PDF report and screenshots; it does not provide an interactive Power BI report.
+**[Explore all six pages in the PDF](reports/novamart-retail.pdf)**
